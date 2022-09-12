@@ -3,6 +3,8 @@ var isItemsViewVisible = false;
 
 const initSite = async () => {
     createUIFromLoadedItemsData();
+    loginBtn()
+
 }
 
 
@@ -15,6 +17,9 @@ async function getProducts() {
 
 /* Use the data to create a list of these object on your website */
 async function createUIFromLoadedItemsData() {
+
+  /*   location.href = 'index.html'; */
+
     if (isItemsViewVisible) { return; }
     isItemsViewVisible = true;
 
@@ -57,7 +62,7 @@ function createListItem(itemData) {
     button.innerHTML = '<i class="fa fa-cart-arrow-down" aria-hidden="true"></i>' + "&nbsp;&nbsp;&nbsp;" + "Lägg till i kundvagnen";
     button.onclick = function() {
         shoppingCart.push(itemData);
-        counter = document.querySelector("#counter");
+        let counter = document.querySelector("#counter");
         counter.innerText = shoppingCart.length;
     };
 
@@ -118,7 +123,7 @@ function createShoppingCartItem(itemData, index) {
         /* Remove the item from the array */
         shoppingCart.splice(index, 1);
         /* Update the counter */
-        counter = document.querySelector("#counter");
+        let counter = document.querySelector("#counter");
         counter.innerText = shoppingCart.length;
         /* Update the UI list */
         isItemsViewVisible = true;
@@ -157,4 +162,20 @@ function createShoppingSummary() {
     return info;
 }
 
+function accountFunction () {
+
+    
+    console.log("kommer in")
+
+
+}
+
+function loginBtn () {
+    const getloginBtn = document.getElementById("account")
+}
+
+
+document.getElementById("home").addEventListener("click", createUIFromLoadedItemsData)
+document.getElementById("cart").addEventListener("click", showShoppingCart)
+document.getElementById("myPage").addEventListener("click", accountFunction)
 window.addEventListener("load", initSite)
