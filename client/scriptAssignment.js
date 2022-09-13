@@ -1,11 +1,11 @@
 import { checkUserInCookie, logoutUser } from "./helpers/fetchHelper.js";
 
-var shoppingCart = [];
 var isItemsViewVisible = false;
 
 const initSite = async () => {
     createUIFromLoadedItemsData();
     showCorrectAuthBoxes();
+    setCounter()
 }
 
 // What will be shown if you're logged in or not
@@ -78,9 +78,24 @@ function createListItem(itemData) {
     var button = document.createElement("button");
     button.innerHTML = '<i class="fa fa-cart-arrow-down" aria-hidden="true"></i>' + "&nbsp;&nbsp;&nbsp;" + "Lägg till i kundvagnen";
     button.onclick = function() {
-        shoppingCart.push(itemData);
-        let counter = document.querySelector("#counter");
-        counter.innerText = shoppingCart.length;
+
+        if (localStorage.getItem("cart")) {
+            let cart = JSON.parse(localStorage.getItem("cart"));
+            let foundIndex = cart.findIndex(cartItem => cartItem.id === itemData.id)
+            if(foundIndex >= 0) {
+                cart[foundIndex].quantity ++
+            } else {
+                let newCartItem = itemData;
+                newCartItem.quantity = 1;
+                cart.push(newCartItem)
+            }
+            localStorage.setItem("cart", JSON.stringify(cart))
+        } else {
+            let newCartItem = itemData;
+            newCartItem.quantity = 1;
+            localStorage.setItem("cart", JSON.stringify([newCartItem]))
+        }
+        setCounter()
     };
 
     var item = document.createElement("li");
@@ -104,6 +119,8 @@ function showShoppingCart() {
     
     /* Shopping list */
     var list = document.createElement("ul");
+    let shoppingCart = JSON.parse(localStorage.getItem("cart"));
+
     for(var index = 0; index < shoppingCart.length; index++) {
         list.appendChild(createShoppingCartItem(shoppingCart[index], index));
     }
@@ -141,16 +158,22 @@ function createShoppingCartItem(itemData, index) {
     /* Price */
     var price = document.createElement("span");
     price.innerText = itemData.default_price.unit_amount_decimal.substring(0, itemData.default_price.unit_amount_decimal.length - 2) + " kr";
-    
+
+    var quantity = document.createElement("span");
+    quantity.innerText = "Antal: " + itemData.quantity;
+
     /* Button */
     var button = document.createElement("button");
     button.innerHTML = '<i class="fa fa-trash-o" aria-hidden="true"></i>' + "&nbsp;&nbsp;&nbsp;" + "Ta bort";
     button.onclick = function() {
+
+        let shoppingCart = JSON.parse(localStorage.getItem("cart"));
         /* Remove the item from the array */
         shoppingCart.splice(index, 1);
-        /* Update the counter */
-        let counter = document.querySelector("#counter");
-        counter.innerText = shoppingCart.length;
+        localStorage.setItem("cart", JSON.stringify(shoppingCart))
+
+        // Update counter
+        setCounter()
         /* Update the UI list */
         isItemsViewVisible = true;
         showShoppingCart();
@@ -160,6 +183,7 @@ function createShoppingCartItem(itemData, index) {
     item.appendChild(image);
     item.appendChild(title);
     item.appendChild(price);
+    item.appendChild(quantity);
     item.appendChild(button);
 
     return item;
@@ -167,13 +191,14 @@ function createShoppingCartItem(itemData, index) {
 
 function createShoppingSummary() {
     /* Total price */
+    let shoppingCart = JSON.parse(localStorage.getItem("cart"));
     var totalPrice = 0;
     for(var i = 0; i < shoppingCart.length; i++) {
         totalPrice += Number(shoppingCart[i].default_price.unit_amount_decimal.substring(0, shoppingCart[i].default_price.unit_amount_decimal.length - 2));
     }
     var priceLabel = document.createElement("h2");
     priceLabel.innerText = "Totalt pris: " + totalPrice + " kr";
-    
+
     /* Proceed button */
     var proceedButton = document.createElement("button");
     proceedButton.innerHTML = '<i class="fa fa-check" aria-hidden="true"></i>' + "&nbsp;&nbsp;&nbsp;" + "Slutför ditt köp";
@@ -186,6 +211,22 @@ function createShoppingSummary() {
     info.appendChild(proceedButton);
 
     return info;
+}
+
+// Set cart counter
+function setCounter() {
+
+    /* Update the counter */
+    let counter = document.querySelector("#counter");
+    let cart = JSON.parse(localStorage.getItem("cart"));
+    let totalQuantity = 0
+
+    if(cart) {
+        for( let i=0; i < cart.length; i++ ) {
+            totalQuantity = totalQuantity + cart[i].quantity
+        }
+    }
+    counter.innerText = totalQuantity;
 }
 
 // What will happen when you click on the logOut-link
