@@ -5,7 +5,7 @@ import { router as userRouter } from './routes/userRouter.js'
 import { router as productRouter } from './routes/productRouter.js'
 import { router as paymentRouter } from './routes/paymentRouter.js'
 import { secret } from './config/authConf.js'
-
+import cors from 'cors';
 
 const app = Express();
 const port = 3000;
@@ -21,6 +21,10 @@ app.use(cookieSession({
     httpOnly: true,
     secure: false
 }))
+// app.use(cors({
+//     origin: ["http://localhost:3000", "https://checkout.stripe.com"],
+//     mode: "no-cors"
+// }))
 
 app.use("/api", userRouter)
 app.use("/api", productRouter)
