@@ -7,6 +7,8 @@ body {
 
 header {
     position: fixed;
+    display: flex;
+    justify-content: space-between;
     top: 0;
     left: 0;
     right: 0;
@@ -33,6 +35,15 @@ header a {
 }
 header a:hover {
     color: #5596F5;
+}
+
+header div {
+    display: flex;
+    margin-right: 20px;
+    align-items: center;
+    cursor: pointer;
+    float: right;
+    height: 100%;
 }
 
 #main {
