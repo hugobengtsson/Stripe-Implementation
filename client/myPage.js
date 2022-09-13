@@ -1,3 +1,5 @@
+import { checkUserInCookie, createUser, loginUser } from "./helpers/fetchHelper.js"
+
 const logOut = document.querySelector(".logout")
 const myPage = document.querySelector(".myPage")
 const buttonCA = document.querySelector(".buttonCA")
@@ -115,28 +117,19 @@ if(buttonCA) {
         // If you get through the validation the credentials will be pushed to the userlist
         userList.push(newCustomer) // Denna behövs inte sen
 
-        const reqOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newCustomer)
+        const registerCustomer = createUser(newCustomer)
+
+        if(registerCustomer) {
+            alert("Ditt konto är skapat! Nu kan du logga in")
+            loginForm.classList.remove("hidden");
+            createAccountForm.classList.add("hidden");
+            
+            // Updates the list in local storage
+        //  // Shall not be used after cookie session is implemented    
+            localStorage.setItem("users", JSON.stringify(userList))
         }
 
-        let response = await fetch('http://localhost:3000/api/register', reqOptions)
-
-        let result = await response.json();
-
-        if(response.status != 200) {
-            alert(result)
-            return
-        }
-
-        alert("Ditt konto är skapat! Nu kan du logga in")
-        loginForm.classList.remove("hidden");
-        createAccountForm.classList.add("hidden");
-        
-        // Updates the list in local storage
-    //  // Shall not be used after cookie session is implemented    
-        localStorage.setItem("users", JSON.stringify(userList))
+ 
     })
 }
 
@@ -171,13 +164,22 @@ function sameInputs(username, password){
 
 
 // Function for clicking on the "logga in"-button
-document.querySelector(".button").addEventListener("click", e => {
+document.querySelector(".button").addEventListener("click", async (e) => {
  
     const inputEmail = document.getElementById("inputEmail").value
     const inputPassword = document.getElementById("inputPassword").value
 
     //fetching theuserlist from local storage
 //  // Todo: Fetch from server/stripe instead    
+
+
+    //const checkuser = checkUserInCookie();
+    //console.log(checkuser)
+
+////////////
+
+    // GetAllUsers
+
     let userList = localStorage.getItem("users")
 
     if(userList) {
@@ -197,6 +199,11 @@ document.querySelector(".button").addEventListener("click", e => {
 
         let loggedInUser = inputEmail
     //  // Shall not be used after cookie session is implemented  (localstorage)
+
+        const login = await loginUser({email: logInUser.email, password: logInUser.password})
+
+        console.log(login)
+
         localStorage.setItem("loggedInUser", loggedInUser);
         alert("Du är inloggad!"  + " Välkommen " + logInUser.name + "!" ) 
         
@@ -209,15 +216,19 @@ document.querySelector(".button").addEventListener("click", e => {
 })
 
 // What will be shown if you're logged in or not
-function showCorrectAuthBoxes() {
-    //  // Todo:  Shall not be used after cookie session is implemented  . Check cookie instead.
-    let loggedInUser = localStorage.getItem("loggedInUser")
+async function showCorrectAuthBoxes() {
 
-    if(loggedInUser) {
+    const checkuser = await checkUserInCookie();
+    //console.log(checkuser)
+
+    //  // Todo:  Shall not be used after cookie session is implemented  . Check cookie instead.
+    //let loggedInUser = localStorage.getItem("loggedInUser")
+
+    if(checkuser.user) {
         window.location.href = './index.html';
         return
     } 
-        loggedInUser = []
+        //loggedInUser = []
 }
 
 

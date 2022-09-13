@@ -1,3 +1,5 @@
+import { checkUserInCookie, logoutUser } from "./helpers/fetchHelper.js";
+
 var shoppingCart = [];
 var isItemsViewVisible = false;
 
@@ -7,11 +9,15 @@ const initSite = async () => {
 }
 
 // What will be shown if you're logged in or not
-function showCorrectAuthBoxes() {
-//  // Todo: Shall not be used after cookie session is implemented  . Check cookie instead.
-    let loggedInUser = localStorage.getItem("loggedInUser")
+async function showCorrectAuthBoxes() {
 
-    if(loggedInUser) {
+    const checkuser = await checkUserInCookie();
+    console.log(checkuser)
+    console.log(checkuser.user)
+//  // Todo: Shall not be used after cookie session is implemented  . Check cookie instead.
+    //let loggedInUser = localStorage.getItem("loggedInUser")
+
+    if(checkuser.user) {
         document.querySelector("#myPage").classList.add("hidden")
         document.querySelector("#logOut").classList.remove("hidden")
         return
@@ -183,10 +189,11 @@ function createShoppingSummary() {
 }
 
 // What will happen when you click on the logOut-link
-document.querySelector("#logOut").addEventListener("click", () => {
+document.querySelector("#logOut").addEventListener("click", async () => {
     document.querySelector("#myPage").classList.remove("hidden")
     document.querySelector("#logOut").classList.add("hidden")
-    localStorage.removeItem("loggedInUser")
+    await logoutUser()
+    //localStorage.removeItem("loggedInUser")
     alert("Du är utloggad!")
     window.location.href = "./index.html"
 })

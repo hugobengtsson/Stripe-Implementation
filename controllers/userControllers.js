@@ -2,7 +2,7 @@ import { nanoid } from 'nanoid'
 import bcrypt from 'bcrypt'
 import  fs  from 'fs';
 import { stripe } from '../server.js';
-import { receiveMessageOnPort } from 'worker_threads';
+
 
 const dataPath = './data/users.json'
 
@@ -74,12 +74,10 @@ export const registerUser = async (req, res) => {
 
             const hashedPassword = await bcrypt.hash(req.body.password, 5)
 
-            // Lägga till address line 2 och land?
             const customer = await stripe.customers.create({
                 email: req.body.email,
                 name: req.body.name,
                 phone: req.body.phone,
-                /* currency: "sek", */  // funkar inte?
                 address: {
                     line1: req.body.address,
                     postal_code: req.body.zipcode,
