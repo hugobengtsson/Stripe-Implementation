@@ -1,4 +1,4 @@
-import { checkUserInCookie, logoutUser } from "./helpers/fetchHelper.js";
+import { checkUserInCookie, logoutUser, getAllUsers } from "./helpers/fetchHelper.js";
 
 var isItemsViewVisible = false;
 
@@ -12,10 +12,6 @@ const initSite = async () => {
 async function showCorrectAuthBoxes() {
 
     const checkuser = await checkUserInCookie();
-    console.log(checkuser)
-    console.log(checkuser.user)
-//  // Todo: Shall not be used after cookie session is implemented  . Check cookie instead.
-    //let loggedInUser = localStorage.getItem("loggedInUser")
 
     if(checkuser.user) {
         document.querySelector("#myPage").classList.add("hidden")
@@ -24,7 +20,6 @@ async function showCorrectAuthBoxes() {
     } 
         document.querySelector("#myPage").classList.remove("hidden")
         document.querySelector("#logOut").classList.add("hidden")
-        loggedInUser = []
 }
 
 async function getProducts() {
@@ -109,7 +104,7 @@ function createListItem(itemData) {
 }
 
 
-function showShoppingCart() {
+async function showShoppingCart() {
     if (!isItemsViewVisible) { return; }
     isItemsViewVisible = false;
 
@@ -135,10 +130,9 @@ function showShoppingCart() {
 
     var container = document.querySelector("#main");
 
-//  // Todo: Shall not be used after cookie session is implemented  . Check cookie instead.
-    let loggedInUser = localStorage.getItem("loggedInUser")
+    const checkuser = await checkUserInCookie();
 
-    if(!loggedInUser) {
+    if(!checkuser.user) {
         alert("Logga in först")
         window.location.href = "./myPage.html"
         return
@@ -234,7 +228,6 @@ document.querySelector("#logOut").addEventListener("click", async () => {
     document.querySelector("#myPage").classList.remove("hidden")
     document.querySelector("#logOut").classList.add("hidden")
     await logoutUser()
-    //localStorage.removeItem("loggedInUser")
     alert("Du är utloggad!")
     window.location.href = "./index.html"
 })

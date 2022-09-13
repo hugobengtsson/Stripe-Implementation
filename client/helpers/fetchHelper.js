@@ -3,10 +3,6 @@ const makeRequest = async (url, body ) => {
         let response = await fetch(url, body)
         let result = await response.json();
 
-        /* if(response.status != 200) {
-            return false
-        } */
-
         return result
     } catch(err) {
         console.error(err)
@@ -74,3 +70,12 @@ export const logoutUser = async() => {
 }
 
 
+export const getAllUsers = async() => {
+
+    let result = await makeRequest('http://localhost:3000/api/users')
+
+    if(result) {
+        return result
+    } 
+    return false
+}

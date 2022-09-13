@@ -3,11 +3,10 @@ import bcrypt from 'bcrypt'
 import  fs  from 'fs';
 import { stripe } from '../server.js';
 
-
 const dataPath = './data/users.json'
 
 // Gets all users
-export const getAllUsers = (req, res) => {
+export const getAllUsers = async (req, res) => {
     try {
         let users = fs.readFileSync(dataPath)
 
@@ -35,13 +34,13 @@ export const loginUser = async (req, res) => {
         if(req.body && req.body.email.length > 0 && req.body.password.length > 0) { 
             const foundUser = users.find(user => user.email == req.body.email)
     
-            if(foundUser && bcrypt.compare(req.body.password, foundUser.password)) {
+            if(foundUser && await bcrypt.compare(req.body.password, foundUser.password)) {
                 req.session.loggedInUser = {
                     id: nanoid(),
                     user: foundUser,
                     date: new Date()
                 }
-                res.status(200).json("Du är inloggad!")
+                res.status(200).json(`Du är inloggad! Välkommen ${foundUser.name}!`)
                 return
             }
             res.status(404).json("Uppgifterna stämmer inte, försök igen")
@@ -61,7 +60,17 @@ export const registerUser = async (req, res) => {
         let users = fs.readFileSync(dataPath)
         users = JSON.parse(users)
 
-        if(req.body && req.body.name && req.body.password && req.body.email && req.body.address && req.body.zipcode && req.body.city && req.body.phone ) {   
+        if(
+            req.body && 
+            req.body.name && 
+            req.body.password && 
+            req.body.email && 
+            req.body.address && 
+            req.body.zipcode && 
+            req.body.city && 
+            req.body.phone 
+        ) 
+        {   
             
             const checkExisitingUser = await stripe.customers.search({
                 query: `email:\'${req.body.email}\'`,
@@ -85,8 +94,6 @@ export const registerUser = async (req, res) => {
                 }
             });
 
-            console.log(customer)
-
             users.push({
                 id: customer.id, 
                 name: req.body.name,
@@ -98,7 +105,7 @@ export const registerUser = async (req, res) => {
             res.status(200).json("Användaren är tillagd!")
             return
         }
-        res.status(404).json("Kolla dina uppgifter")
+        res.status(404).json("Fyll i alla fält")
     }catch(err) {
         res.status(404).json(err.message)
     }

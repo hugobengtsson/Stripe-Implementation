@@ -16,7 +16,7 @@ app.use(Express.static("client"))
 app.use(Express.json())
 app.use(cookieSession({
     secret: secret,
-    maxAge: 10000 * 10,  // 10 min?
+    maxAge: 24 * 60 * 60 * 1000,  // 24 hours
     sameSite: 'strict',
     httpOnly: true,
     secure: false
