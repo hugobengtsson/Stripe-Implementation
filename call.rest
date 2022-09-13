@@ -37,3 +37,14 @@ DELETE http://localhost:3000/api/login
 ### PRODUCTS ###
 
 GET http://localhost:3000/api/getAllProducts
+
+
+### PAYMENT ###
+
+POST http://localhost:3000/api/payment/create-payment-intent/
+Content-Type: application/json
+
+{
+    "username": "Victor",
+    "password": "hej123"
+}

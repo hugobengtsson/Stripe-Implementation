@@ -3,6 +3,7 @@ import Stripe from "stripe"
 import cookieSession from 'cookie-session'
 import { router as userRouter } from './routes/userRouter.js'
 import { router as productRouter } from './routes/productRouter.js'
+import { router as paymentRouter } from './routes/paymentRouter.js'
 import { secret } from './config/authConf.js'
 
 
@@ -23,6 +24,7 @@ app.use(cookieSession({
 
 app.use("/api", userRouter)
 app.use("/api", productRouter)
+app.use("/api/payment", paymentRouter)
 
 
 
