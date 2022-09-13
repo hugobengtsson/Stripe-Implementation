@@ -1,6 +1,8 @@
 import { nanoid } from 'nanoid'
 import bcrypt from 'bcrypt'
 import  fs  from 'fs';
+import { stripe } from '../server.js';
+import { receiveMessageOnPort } from 'worker_threads';
 
 const dataPath = './data/users.json'
 
@@ -30,8 +32,8 @@ export const loginUser = async (req, res) => {
         let users = fs.readFileSync(dataPath)
         users = JSON.parse(users)
 
-        if(req.body && req.body.username.length > 0 && req.body.password.length > 0) { 
-            const foundUser = users.find(user => user.username == req.body.username)
+        if(req.body && req.body.email.length > 0 && req.body.password.length > 0) { 
+            const foundUser = users.find(user => user.email == req.body.email)
     
             if(foundUser && bcrypt.compare(req.body.password, foundUser.password)) {
                 req.session.loggedInUser = {
@@ -42,7 +44,6 @@ export const loginUser = async (req, res) => {
                 res.status(200).json("Du är inloggad!")
                 return
             }
-            // res.status(401).json("Fel lösenord") För osäkert? 
             res.status(404).json("Uppgifterna stämmer inte, försök igen")
             return
         }
@@ -60,18 +61,38 @@ export const registerUser = async (req, res) => {
         let users = fs.readFileSync(dataPath)
         users = JSON.parse(users)
 
-        if(req.body && req.body.username && req.body.password) {   
-            const checkExisitingUser = users.find(user => user.username == req.body.username)
-    
-            if(checkExisitingUser) {
-                res.status(404).json("Användarnamnet existerar redan")
+        if(req.body && req.body.name && req.body.password && req.body.email && req.body.address && req.body.zipcode && req.body.city && req.body.phone ) {   
+            
+            const checkExisitingUser = await stripe.customers.search({
+                query: `email:\'${req.body.email}\'`,
+            });
+
+            if(checkExisitingUser.data.length > 0) {
+                res.status(404).json("Användaren existerar redan")
                 return
             }
+
             const hashedPassword = await bcrypt.hash(req.body.password, 5)
-    
+
+            // Lägga till address line 2 och land?
+            const customer = await stripe.customers.create({
+                email: req.body.email,
+                name: req.body.name,
+                phone: req.body.phone,
+                /* currency: "sek", */  // funkar inte?
+                address: {
+                    line1: req.body.address,
+                    postal_code: req.body.zipcode,
+                    city: req.body.city
+                }
+            });
+
+            console.log(customer)
+
             users.push({
-                id: nanoid(),
-                username: req.body.username,
+                id: customer.id, 
+                name: req.body.name,
+                email: req.body.email,
                 password: hashedPassword
             })
 
@@ -84,6 +105,7 @@ export const registerUser = async (req, res) => {
         res.status(404).json(err.message)
     }
 }
+
 
 // Log out user
 export const logoutUser = (req, res) => {
