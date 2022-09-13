@@ -26,3 +26,22 @@ export const createPaymentIntent = async (req, res) => {
         clientSecret: paymentIntent.client_secret,
     });
 }
+
+export const createPayment = async (req, res) => {
+    // loop över cartItems som blir line_items.
+    const session = await stripe.checkout.sessions.create({
+        line_items: [
+            {
+                // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+                price: 'price_1Lh8H9LiXPjWjAyxNUuDBP3v',
+                quantity: 1,
+            },
+        ],
+        mode: 'payment',
+        success_url: `http://localhost:3000/success.html`,
+        cancel_url: `http://localhost:3000/cancel.html`,
+    });
+    
+    res.json(session.url);
+
+}

@@ -1,4 +1,4 @@
-const makeRequest = async (url, body ) => {
+export const makeRequest = async (url, body ) => {
     try {
         let response = await fetch(url, body)
         let result = await response.json();

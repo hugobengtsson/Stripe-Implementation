@@ -1,4 +1,4 @@
-import { checkUserInCookie, logoutUser, getAllUsers } from "./helpers/fetchHelper.js";
+import { checkUserInCookie, logoutUser, getAllUsers, makeRequest} from "../helpers/fetchHelper.js";
 
 var isItemsViewVisible = false;
 
@@ -25,7 +25,7 @@ async function showCorrectAuthBoxes() {
 async function getProducts() {
     const products = await fetch("http://localhost:3000/api/getAllProducts");
     const result = await products.json()
-    
+    console.log(result)
     return result;
 }
 
@@ -121,7 +121,7 @@ async function showShoppingCart() {
     }
     
     /* Shopping info & action */
-    var info = createShoppingSummary();
+    var info = await createShoppingSummary();
     
     var content = document.createElement("div");
     content.appendChild(header);
@@ -183,7 +183,7 @@ function createShoppingCartItem(itemData, index) {
     return item;
 }
 
-function createShoppingSummary() {
+async function createShoppingSummary() {
     /* Total price */
     let shoppingCart = JSON.parse(localStorage.getItem("cart"));
     var totalPrice = 0;
@@ -196,8 +196,18 @@ function createShoppingSummary() {
     /* Proceed button */
     var proceedButton = document.createElement("button");
     proceedButton.innerHTML = '<i class="fa fa-check" aria-hidden="true"></i>' + "&nbsp;&nbsp;&nbsp;" + "Slutför ditt köp";
-    proceedButton.onclick = function() {
-        alert("Tack för din beställning, vi önskar dig en fin kväll! Ses snart igen =)");
+    proceedButton.onclick = async function() {
+        // alert("Tack för din beställning, vi önskar dig en fin kväll! Ses snart igen =)");
+        let body = JSON.stringify(shoppingCart)
+        let response = await makeRequest(
+            "/api/payment/create-payment",
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body
+            }
+        )
+        window.location.href = response
     };
 
     var info = document.createElement("div");

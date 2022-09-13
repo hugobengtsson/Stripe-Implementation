@@ -1,4 +1,4 @@
-import { checkUserInCookie, createUser, loginUser, getAllUsers } from "./helpers/fetchHelper.js"
+import { checkUserInCookie, createUser, loginUser, getAllUsers } from "../helpers/fetchHelper.js"
 
 const buttonCA = document.querySelector(".buttonCA")
 const loginForm = document.querySelector("#login")
