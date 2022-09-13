@@ -1,5 +1,5 @@
-const logOut = document.querySelector(".logout")
-const myPage = document.querySelector(".myPage")
+import { checkUserInCookie, createUser, loginUser, getAllUsers } from "./helpers/fetchHelper.js"
+
 const buttonCA = document.querySelector(".buttonCA")
 const loginForm = document.querySelector("#login")
 const createAccountForm = document.querySelector("#createAccount")
@@ -29,8 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // Create account - process
 
 
-// Creates a function when you click on "Skapa konto"-button  
-
+// Create account/customer
 if(buttonCA) {
     buttonCA.addEventListener("click", async (e) => {
         e.preventDefault(); 
@@ -44,7 +43,6 @@ if(buttonCA) {
         const city = document.getElementById("city").value
         const phone = document.getElementById("phone").value
 
-        ////////////////////////////////////
         const newCustomer = {
             name: fullName,
             email,
@@ -55,39 +53,40 @@ if(buttonCA) {
             password
         }
 
-        console.log(newCustomer)
+        if(
+            phone.length == 0 || 
+            fullName.length == 0 || 
+            confPassword.length == 0 || 
+            email.length == 0 || 
+            address.length == 0 || 
+            zipcode.length == 0 || 
+            city.length == 0) 
+        {
+            alert("Fyll i alla fält!")
+            return
+        }
 
-        ///////////////////////
 
-    //// Todo: Fix validations. Below is old !! //// 
+    //// Todo: Fix validation. Make a check if input is an email address //// 
 
-        const isValid = validateInputs(fullName, password)
+        //const isValid = validateInputs(fullName, password)
         const validPw = validPass(password, confPassword)
         const inputPwUser = sameInputs(fullName, password)
         let usernameisfree = true
     
-        // Fetching the userlist from local storage
-    //    // Todo: Fetch userlist from server/strip instead
-        let userList = localStorage.getItem("users")
+        const userList = await getAllUsers()
     
         // if the "isValid"-function is false (See the function below)
-        if(!isValid) {
+        /* if(!isValid) {
             alert("Du behöver ha fler än 5 tecken")
             return
-        }
+        } */
         
         if(!inputPwUser) {
             alert("Användarnamnet och lösenordet kan inte vara samma. Bättre kan du :) ")
             return
         }
-    
-        // If something is in the userlist, do a parse. Else, leave it empty. 
-        if(userList) {
-            userList = JSON.parse(userList)
-        } else {
-            userList = []
-        }
-    
+        
         // Comparing if the username you want to create already exists in the list
         for(let i = 0 ; i < userList.length; i++) {
             
@@ -110,33 +109,13 @@ if(buttonCA) {
             return
         }
     
-        
-    //  // Todo: Make a post to customer(stripe)
-        // If you get through the validation the credentials will be pushed to the userlist
-        userList.push(newCustomer) // Denna behövs inte sen
+        const registerCustomer = createUser(newCustomer)
 
-        const reqOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newCustomer)
+        if(registerCustomer) {
+            alert("Ditt konto är skapat! Nu kan du logga in")
+            loginForm.classList.remove("hidden");
+            createAccountForm.classList.add("hidden");
         }
-
-        let response = await fetch('http://localhost:3000/api/register', reqOptions)
-
-        let result = await response.json();
-
-        if(response.status != 200) {
-            alert(result)
-            return
-        }
-
-        alert("Ditt konto är skapat! Nu kan du logga in")
-        loginForm.classList.remove("hidden");
-        createAccountForm.classList.add("hidden");
-        
-        // Updates the list in local storage
-    //  // Shall not be used after cookie session is implemented    
-        localStorage.setItem("users", JSON.stringify(userList))
     })
 }
 
@@ -171,53 +150,34 @@ function sameInputs(username, password){
 
 
 // Function for clicking on the "logga in"-button
-document.querySelector(".button").addEventListener("click", e => {
- 
+document.querySelector(".button").addEventListener("click", async (e) => {
+    
     const inputEmail = document.getElementById("inputEmail").value
     const inputPassword = document.getElementById("inputPassword").value
 
-    //fetching theuserlist from local storage
-//  // Todo: Fetch from server/stripe instead    
-    let userList = localStorage.getItem("users")
-
-    if(userList) {
-        userList = JSON.parse(userList)
-    } else {
-        userList = []
-    }
-
-    // compare the lists. The match will return
-    let logInUser = userList.find((user) => {
-
-        return (user.email == inputEmail && user.password == inputPassword)
-    })
-
-    // If we get a match, we push the match to the new list "loggedInUser". If not, we have the wrong credentials
-    if(logInUser) {
-
-        let loggedInUser = inputEmail
-    //  // Shall not be used after cookie session is implemented  (localstorage)
-        localStorage.setItem("loggedInUser", loggedInUser);
-        alert("Du är inloggad!"  + " Välkommen " + logInUser.name + "!" ) 
-        
-        showCorrectAuthBoxes();
-        return
-    } 
-    else {
-        alert("Fel användarnamn eller lösenord")
-    }
+        if(inputEmail.length > 0 && inputPassword.length > 0) {
+                const login = await loginUser({email: inputEmail, password: inputPassword})
+    
+                if(!login) {
+                    alert(login)
+                    return
+                }
+    
+                alert(login) 
+                showCorrectAuthBoxes();
+        } else {
+            alert("Alla fält måste vara ifyllda")
+        }
 })
 
 // What will be shown if you're logged in or not
-function showCorrectAuthBoxes() {
-    //  // Todo:  Shall not be used after cookie session is implemented  . Check cookie instead.
-    let loggedInUser = localStorage.getItem("loggedInUser")
+async function showCorrectAuthBoxes() {
+    const checkuser = await checkUserInCookie();
 
-    if(loggedInUser) {
+    if(checkuser.user) {
         window.location.href = './index.html';
         return
     } 
-        loggedInUser = []
 }
 
 
