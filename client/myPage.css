@@ -1,0 +1,170 @@
+* {
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    margin: 0px;
+    
+}
+
+.flex {
+    display: flex;
+}
+
+.white {
+    color: white;
+}
+
+main {
+    margin-top: 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    padding-bottom: 30px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.hidden {
+    display: none;
+}
+
+.logOut {
+    text-decoration: none;
+    font-size: 20px;
+    margin-right: 5px;
+}
+
+.welcome {
+    margin-top: 100px;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-top: 40px
+}
+
+.h1 {
+    font-size: 30px;
+}
+
+.form {
+    min-width: 400px;
+    min-height: 420px;
+    border-radius: 7px;
+    background-color: #212121;
+    margin: 10px; 
+    padding-top: 35px;
+    padding-left: 50px;
+    padding-right: 50px;
+    text-align: center;
+}
+
+input {
+    display: flex;  
+    justify-content: center;  
+    align-items: center;   
+    width: 100%;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    padding: 12px;
+    border: none;
+    border-bottom: 1.5px solid rgb(95, 95, 95);
+    transition: 0.2s border-color 0.2s;
+    outline: none;
+}
+
+.button {    
+    width: 80%;
+    margin-top: 15px;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    outline: none;
+    border: 1px solid #dddddd;
+    outline: none;
+    background: rgb(14, 193, 174);
+    transition: 0.2s border-color 0.2s;
+    cursor:pointer;
+
+    color: white;
+    font-weight: bold;
+}
+
+.buttonCA {  
+    width: 80%;
+    margin-top: 15px;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    outline: none;
+    border: 1px solid #dddddd;
+    outline: none;
+    background: rgb(14, 193, 174);
+    transition: 0.2s border-color 0.2s;
+    cursor:pointer;
+    color: white;
+    font-weight: bold;
+}
+
+.buttonCA:hover {
+    background-color: rgb(41, 146, 136);
+}
+
+.button:hover {
+    background-color: rgb(41, 146, 136);
+}
+
+.noAccountLink { 
+    color: white;
+    cursor:pointer; 
+}
+
+.noAccountLink:hover {
+    color: blue;
+}
+
+a:link {
+    text-decoration: none;
+  }
+
+
+.formText {
+    font-size: 14px;
+    padding-top: 10px;
+}
+
+.mainCont {
+    display: flex;
+    flex-direction: column;
+    column-gap: 15px;
+}
+
+.inputCont {
+    display: flex;
+    column-gap: 15px;
+}
+
+@media screen and (max-width: 600px) {
+
+    .form {
+        margin-top: 30px;
+        width: 100%;
+        height: 100%;
+    }
+
+    .container {
+        width: 100%;
+        height: 100%;
+    }
+    
+    main {
+        background-color: white;
+    }
+}

@@ -16,8 +16,8 @@ app.use(Express.static("client"))
 app.use(Express.json())
 app.use(cookieSession({
     secret: secret,
-    maxAge: 1000 * 10,  // Ändra till längre senare
-    sameSite: 'strict', // Skulle vara något annat med react? 
+    maxAge: 10000 * 10,  // 10 min?
+    sameSite: 'strict',
     httpOnly: true,
     secure: false
 }))

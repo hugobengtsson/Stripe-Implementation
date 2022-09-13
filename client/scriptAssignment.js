@@ -3,10 +3,23 @@ var isItemsViewVisible = false;
 
 const initSite = async () => {
     createUIFromLoadedItemsData();
-    loginBtn()
-
+    showCorrectAuthBoxes();
 }
 
+// What will be shown if you're logged in or not
+function showCorrectAuthBoxes() {
+//  // Todo: Shall not be used after cookie session is implemented  . Check cookie instead.
+    let loggedInUser = localStorage.getItem("loggedInUser")
+
+    if(loggedInUser) {
+        document.querySelector("#myPage").classList.add("hidden")
+        document.querySelector("#logOut").classList.remove("hidden")
+        return
+    } 
+        document.querySelector("#myPage").classList.remove("hidden")
+        document.querySelector("#logOut").classList.add("hidden")
+        loggedInUser = []
+}
 
 async function getProducts() {
     const products = await fetch("http://localhost:3000/api/getAllProducts");
@@ -17,8 +30,6 @@ async function getProducts() {
 
 /* Use the data to create a list of these object on your website */
 async function createUIFromLoadedItemsData() {
-
-  /*   location.href = 'index.html'; */
 
     if (isItemsViewVisible) { return; }
     isItemsViewVisible = true;
@@ -100,6 +111,15 @@ function showShoppingCart() {
     content.appendChild(info);
 
     var container = document.querySelector("#main");
+
+//  // Todo: Shall not be used after cookie session is implemented  . Check cookie instead.
+    let loggedInUser = localStorage.getItem("loggedInUser")
+
+    if(!loggedInUser) {
+        alert("Logga in först")
+        window.location.href = "./myPage.html"
+        return
+    }
     container.replaceChild(content, container.firstChild);
 }
 
@@ -162,20 +182,17 @@ function createShoppingSummary() {
     return info;
 }
 
-function accountFunction () {
+// What will happen when you click on the logOut-link
+document.querySelector("#logOut").addEventListener("click", () => {
+    document.querySelector("#myPage").classList.remove("hidden")
+    document.querySelector("#logOut").classList.add("hidden")
+    localStorage.removeItem("loggedInUser")
+    alert("Du är utloggad!")
+    window.location.href = "./index.html"
+})
 
-    
-    console.log("kommer in")
-
-
-}
-
-function loginBtn () {
-    const getloginBtn = document.getElementById("account")
-}
 
 
 document.getElementById("home").addEventListener("click", createUIFromLoadedItemsData)
 document.getElementById("cart").addEventListener("click", showShoppingCart)
-document.getElementById("myPage").addEventListener("click", accountFunction)
 window.addEventListener("load", initSite)

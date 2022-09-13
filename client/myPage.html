@@ -1,0 +1,82 @@
+<!DOCTYPE HTML>
+
+<html>
+  <head>
+    <title>Min sida</title>
+    <script src="https://use.fontawesome.com/86ad615387.js"></script>
+    <link rel="stylesheet" href="./styleAssignment.css">
+    <link rel="stylesheet" href="./myPage.css">
+  </head>
+  <body>
+    <header>
+      <a id="home" href="./index.html"><h1>TechStore</h1></a>
+      <div>
+        <a id="cart">
+          <span id="counter"></span> <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+        </a>
+      </div>
+    </header>
+    <main>
+      <!-- Login - Window -->
+      <section class="container">
+          <form class="form" id="login">  
+              <h1 class="h1">Logga in</h1>
+              <div class="inputGroup">
+                  <input id="inputEmail" type="email" placeholder="Email" name="email" autofocus required> 
+              </div>
+              <div class="inputGroup">
+                  <input id="inputPassword" type="password" placeholder="Lösenord" name="Lösenord" required> 
+              </div>
+              <button class="button" type="submit">Logga in</button>
+              <p class="formText">
+                  <a class="noAccountLink" id="linkCreateAccount" href="#" >Inget konto? Skapa ett här</a>
+              </p>
+          </form>
+          <!-- Create account - Window -->
+
+          <form class="form hidden" id="createAccount">
+              <h1 class="h1">Skapa konto</h1>
+              <div class="mainCont">
+                <div class="inputCont">
+                  <div class="ContLeft">
+                    <div class="inputGroup">
+                      <input id="name" type="text" placeholder="Namn" name="name" autofocus required> 
+                    </div>
+                    <div class="inputGroup">
+                      <input id="email" type="email" placeholder="E-mail" name="email" required> 
+                    </div>
+                    <div class="inputGroup">
+                        <input id="pw" type="password" placeholder="Lösenord" name="Lösenord" required> 
+                    </div>
+                    <div class="inputGroup">
+                        <input id="confirmPw" type="password" placeholder="Bekräfta lösenord" name="Lösenord" required> 
+                    </div>
+                  </div>
+                  <div class="ContRight">
+                    <div class="inputGroup">
+                      <input id="address" type="text" placeholder="Address" name="address" required> 
+                    </div>
+                    <div class="inputGroup">
+                      <input id="zipcode" type="number" placeholder="Postnummer" name="zipcode" required> 
+                    </div>
+                    <div class="inputGroup">
+                      <input id="city" type="text" placeholder="Ort" name="city" required> 
+                    </div>
+                    <div class="inputGroup">
+                      <input id="phone" type="text" placeholder="Telefon" name="phone" required> 
+                    </div>
+                  </div>
+                </div>
+                <div class="btnCont">
+                  <button class="buttonCA" type="submit">Skapa konto</button>
+                  <p class="formText">
+                      <a class="noAccountLink" id="linkLogIn" href="#" >Har du redan ett konto? Klicka här</a>
+                  </p>
+                </div>
+              </div>
+          </form>
+      </section>
+  </main>
+    <script type="module" src="./myPage.js"></script>
+  </body>
+</html>

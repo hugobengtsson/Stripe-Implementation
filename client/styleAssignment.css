@@ -18,10 +18,11 @@ header {
 }
 
 header h1 {
-    font-size: 2.5em;
+    font-size: 40px;
     display: inline-block;
     margin: 0;
     cursor: pointer;
+    color: white;
 }
 header h1:hover {
     color: #5596F5;
@@ -32,6 +33,12 @@ header a {
     float: right;
     margin: 0;
     cursor: pointer;
+}
+
+#myPage, #logOut {
+    font-size: 20px;
+    margin-right: 20px;
+    color: white;
 }
 header a:hover {
     color: #5596F5;
@@ -96,6 +103,14 @@ button {
 }
 button:hover {
     background-color: #447CD0;
+}
+
+a {
+    text-decoration: none;
+}
+
+.hidden {
+    display: none;
 }
 
 @media (max-width: 640px) {

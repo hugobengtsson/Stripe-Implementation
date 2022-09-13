@@ -4,8 +4,13 @@ POST http://localhost:3000/api/register
 Content-Type: application/json
 
 {
-    "username": "Patrik",
-    "password": "hej123"
+    "name": "Victor Olsson",
+    "email": "victor@hej.se",
+    "password": "hej123",
+    "address": "hejgatan 3",
+    "zipcode": 12345,
+    "city": "Göteborg",
+    "phone": "0762336699"
 }
 
 ### Login user
@@ -13,7 +18,7 @@ POST http://localhost:3000/api/login
 Content-Type: application/json
 
 {
-    "username": "Victor",
+    "email": "victor@hej.se",
     "password": "hej123"
 }
 
