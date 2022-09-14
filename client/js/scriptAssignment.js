@@ -1,6 +1,6 @@
-import { checkUserInCookie, logoutUser, getAllUsers, makeRequest} from "../helpers/fetchHelper.js";
+import { checkUserInCookie, logoutUser, makeRequest} from "../helpers/fetchHelper.js";
 
-const stripe = Stripe("pk_test_51Lh7v3LiXPjWjAyxeBK9PUswZwXrKZ5PiajD2a7NRxeAl6bKWg6udbItz9uRYfeodsCkWLdZQrIQQEsz45s8pIby004x2bX371");
+export const stripe = Stripe("pk_test_51Lh7v3LiXPjWjAyxeBK9PUswZwXrKZ5PiajD2a7NRxeAl6bKWg6udbItz9uRYfeodsCkWLdZQrIQQEsz45s8pIby004x2bX371");
 
 var isItemsViewVisible = false;
 
@@ -201,6 +201,7 @@ async function createShoppingSummary() {
     proceedButton.onclick = async function() {
         // alert("Tack för din beställning, vi önskar dig en fin kväll! Ses snart igen =)");
         let body = JSON.stringify(shoppingCart)
+        
         let response = await makeRequest(
             "/api/payment/create-payment",
             {
@@ -209,10 +210,15 @@ async function createShoppingSummary() {
                 body
             }
         )
+        if(response){
+            const result = await stripe.redirectToCheckout({
+                sessionId: response,
+            });
 
-        const result = await stripe.redirectToCheckout({
-            sessionId: response,
-        });
+        }else{
+            alert("Logga in först")
+            window.location.href = "./myPage.html"
+        }
     };
 
     var info = document.createElement("div");
