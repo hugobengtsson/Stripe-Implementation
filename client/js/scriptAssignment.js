@@ -1,5 +1,7 @@
 import { checkUserInCookie, logoutUser, getAllUsers, makeRequest} from "../helpers/fetchHelper.js";
 
+const stripe = Stripe("pk_test_51Lh7v3LiXPjWjAyxeBK9PUswZwXrKZ5PiajD2a7NRxeAl6bKWg6udbItz9uRYfeodsCkWLdZQrIQQEsz45s8pIby004x2bX371");
+
 var isItemsViewVisible = false;
 
 const initSite = async () => {
@@ -207,7 +209,10 @@ async function createShoppingSummary() {
                 body
             }
         )
-        window.location.href = response
+
+        const result = await stripe.redirectToCheckout({
+            sessionId: response,
+        });
     };
 
     var info = document.createElement("div");
