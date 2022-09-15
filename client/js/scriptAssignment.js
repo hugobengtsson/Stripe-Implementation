@@ -14,8 +14,9 @@ const initSite = async () => {
 async function showCorrectAuthBoxes() {
 
     const checkuser = await checkUserInCookie();
+    console.log(checkuser.msg)
 
-    if(checkuser.user) {
+    if(checkuser.msg.user) {
         document.querySelector("#myPage").classList.add("hidden")
         document.querySelector("#logOut").classList.remove("hidden")
         return
@@ -134,7 +135,7 @@ async function showShoppingCart() {
 
     const checkuser = await checkUserInCookie();
 
-    if(!checkuser.user) {
+    if(!checkuser.msg.user) {
         alert("Logga in först")
         window.location.href = "./myPage.html"
         return

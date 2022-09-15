@@ -11,47 +11,30 @@ export const makeRequest = async (url, body ) => {
 
 
 export const checkUserInCookie = async() => {
-
     let result = await makeRequest('http://localhost:3000/api/login')
-
-    if(result) {
-        return result
-    } 
-    return false
+    return result
 }
 
 
 export const createUser = async(newCustomer) => {
-
     const reqOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newCustomer)
     }
-
     let result = await makeRequest('http://localhost:3000/api/register', reqOptions)
-
-    if(result) {
-        return result
-    } 
-    return false
+    return result
 }
 
 
 export const loginUser = async(user) => {
-
     const reqOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(user)
     }
-
     let result = await makeRequest('http://localhost:3000/api/login', reqOptions)
-
-    if(result) {
-        return result
-    } 
-    return false
+    return result
 }
 
 export const logoutUser = async() => {
@@ -60,22 +43,12 @@ export const logoutUser = async() => {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
     }
-
     let result = await makeRequest('http://localhost:3000/api/login', reqOptions)
-
-    if(result) {
-        return result
-    } 
-    return false
+    return result
 }
 
 
 export const getAllUsers = async() => {
-
     let result = await makeRequest('http://localhost:3000/api/users')
-
-    if(result) {
-        return result
-    } 
-    return false
+    return result
 }
