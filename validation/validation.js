@@ -2,7 +2,6 @@
 const validateValues = (object) => {
     if(
         object.name.length == 0 ||  
-        object.password.length == 0 || 
         object.email.length == 0 ||  
         object.address.line1.length == 0 ||  
         object.address.postal_code.length == 0 || 
@@ -22,9 +21,6 @@ const validateValues = (object) => {
         return {bool: false, msg: "Fel!"}
     }
     if(object.phone.length != 10 || /^[0-9]+$/.test(object.phone) == false) {
-        return {bool: false, msg: "Fel!"}
-    }
-    if(object.password.length < 6) {
         return {bool: false, msg: "Fel!"}
     }
     if(object.name.length < 3 ) {

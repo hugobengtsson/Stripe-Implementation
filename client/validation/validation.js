@@ -1,8 +1,9 @@
 
-const validateValues = (object) => {
+const validateValues = (object, password) => {
+
     if(
         object.name.length == 0 ||  
-        object.password.length == 0 || 
+        password.length == 0 || 
         object.email.length == 0 ||  
         object.address.line1.length == 0 ||  
         object.address.postal_code.length == 0 || 
@@ -24,7 +25,10 @@ const validateValues = (object) => {
     if(object.phone.length != 10 || /^[0-9]+$/.test(object.phone) == false) {
         return {bool: false, msg: "Telefonnummer -  Måste innehålla 10 siffror. Ex. 0721112233"}
     }
-    if(object.password.length < 6) {
+    if(object.phone.startsWith("0") == false) {
+        return {bool: false, msg: "Telefonnummer -  Måste börja med 0. Ex. 0721112233"}
+    }
+    if(password.length < 6) {
         return {bool: false, msg: "Lösenord - Måste innehålla minst 6 karaktärer"}
     }
     if(object.name.length < 3 ) {
@@ -38,6 +42,9 @@ const validateValues = (object) => {
     }
     if(object.address.city.length < 3) {
         return {bool: false, msg: "Ort - Måste innehålla minst 2 bokstäver"}
+    }
+    if(object.address.line1.length < 5) {
+        return {bool: false, msg: "Address - Måste innehålla minst 4 karaktärer"}
     }
 
     return {bool: true, msg: "Pass!"}
