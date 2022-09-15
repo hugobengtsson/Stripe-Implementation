@@ -2,6 +2,7 @@ import { nanoid } from 'nanoid'
 import bcrypt from 'bcrypt'
 import  fs  from 'fs';
 import { stripe } from '../server.js';
+import validateValues from '../validation/validation.js';
 
 const dataPath = './data/users.json'
 
@@ -41,7 +42,7 @@ export const loginUser = async (req, res) => {
             });
 
             if(checkExisitingUser.data.length == 0) {
-                res.status(404).json({bool: false, msg: "Användaren finns inte i stripe, skapa ny användare"})
+                res.status(404).json({bool: false, msg: "Uppgifterna stämmer inte, försök igen"})
                 return 
             }
 
@@ -57,6 +58,7 @@ export const loginUser = async (req, res) => {
                 res.status(200).json({bool: true, msg: `Du är inloggad! Välkommen ${foundUser.name}!`})
                 return
             }
+
             res.status(404).json({bool: false, msg: "Uppgifterna stämmer inte, försök igen"})
             return
         }
@@ -98,6 +100,13 @@ export const registerUser = async (req, res) => {
             if(!checkExisitingUser.data.length == 0 || findUserinList != undefined) {
                 res.status(404).json({bool: false, msg: "Användaren existerar redan"})
                 return 
+            }
+
+            const checkValues = validateValues(req.body)
+
+            if(!checkValues.bool) {
+                res.status(404).json(checkValues)
+                return
             }
 
             // Encrypts the password
