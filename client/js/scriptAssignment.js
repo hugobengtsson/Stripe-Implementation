@@ -1,4 +1,5 @@
 import { checkUserInCookie, logoutUser, makeRequest} from "../helpers/fetchHelper.js";
+import { renderOrders } from "./renderOrders.js";
 
 export const stripe = Stripe("pk_test_51Lh7v3LiXPjWjAyxeBK9PUswZwXrKZ5PiajD2a7NRxeAl6bKWg6udbItz9uRYfeodsCkWLdZQrIQQEsz45s8pIby004x2bX371");
 
@@ -127,11 +128,15 @@ async function showShoppingCart() {
     
     /* Shopping info & action */
     var info = await createShoppingSummary();
+
+    // Render previous order:
+    let orders = await renderOrders();
     
     var content = document.createElement("div");
     content.appendChild(header);
     content.appendChild(list);
     content.appendChild(info);
+    content.appendChild(orders);
 
     var container = document.querySelector("#main");
 
@@ -189,6 +194,9 @@ function createShoppingCartItem(itemData, index) {
 }
 
 async function createShoppingSummary() {
+
+    var info = document.createElement("div");
+
     /* Total price */
     let shoppingCart = JSON.parse(localStorage.getItem("cart"));
     var totalPrice = 0;
@@ -198,35 +206,37 @@ async function createShoppingSummary() {
     var priceLabel = document.createElement("h2");
     priceLabel.innerText = "Totalt pris: " + totalPrice + " kr";
 
-    /* Proceed button */
-    var proceedButton = document.createElement("button");
-    proceedButton.innerHTML = '<i class="fa fa-check" aria-hidden="true"></i>' + "&nbsp;&nbsp;&nbsp;" + "Slutför ditt köp";
-    proceedButton.onclick = async function() {
-        // alert("Tack för din beställning, vi önskar dig en fin kväll! Ses snart igen =)");
-        let body = JSON.stringify(shoppingCart)
-        
-        let response = await makeRequest(
-            "/api/payment/create-payment",
-            {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body
-            }
-        )
-        if(response){
-            const result = await stripe.redirectToCheckout({
-                sessionId: response,
-            });
+    if(JSON.parse(localStorage.getItem("cart")).length > 0) {
 
-        }else{
-            alert("Logga in först")
-            window.location.href = "./myPage.html"
-        }
-    };
+        /* Proceed button */
+        var proceedButton = document.createElement("button");
+        proceedButton.innerHTML = '<i class="fa fa-check" aria-hidden="true"></i>' + "&nbsp;&nbsp;&nbsp;" + "Slutför ditt köp";
+        proceedButton.onclick = async function() {
+            // alert("Tack för din beställning, vi önskar dig en fin kväll! Ses snart igen =)");
+            let body = JSON.stringify(shoppingCart)
+            
+            let response = await makeRequest(
+                "/api/payment/create-payment",
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body
+                }
+                )
+                if(response){
+                    const result = await stripe.redirectToCheckout({
+                        sessionId: response,
+                    });
+                    
+                }else{
+                    alert("Logga in först")
+                    window.location.href = "./myPage.html"
+                }
+            };
+        info.appendChild(proceedButton);
+    }
 
-    var info = document.createElement("div");
-    info.appendChild(priceLabel);
-    info.appendChild(proceedButton);
+    info.prepend(priceLabel);
 
     return info;
 }
