@@ -108,27 +108,12 @@ if(buttonCA) {
 
         const validPw = validPass(password, confPassword)
         const inputPwUser = sameInputs(fullName, password)
-        let usernameisfree = true
-    
-        const userList = await getAllUsers()
-    
+
         if(!inputPwUser) {
             alert("Användarnamnet och lösenordet kan inte vara samma. Bättre kan du :) ")
             return
         }
-        
-        // Comparing if the username you want to create already exists in the list
-        for(let i = 0 ; i < userList.length; i++) { 
-            let user = userList[i]
-            if(user.email == email) {
-                usernameisfree = false
-                if(!usernameisfree) {
-                    alert("Användaren existerar redan!")
-                    return
-                }
-            }
-        }   
-    
+
         // If the password inputs doesnt match:
         if(!validPw){
             alert("Lösenorden stämmer inte överrens")

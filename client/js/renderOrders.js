@@ -1,17 +1,26 @@
-import { makeRequest } from "../helpers/fetchHelper.js"
+import { makeRequest, checkUserInCookie } from "../helpers/fetchHelper.js"
 
 
 export const renderOrders = async () => {
 
-    let orders = await makeRequest("http://localhost:3000/api/getOrders");
+    const checkuser = await checkUserInCookie();
 
+    if(!checkuser.msg.user) {
+        return document.createElement("div")
+    }
+
+    let orders = await makeRequest("http://localhost:3000/api/getOrders");
+    
+    if(!orders) {
+        return document.createElement("div")
+    }
     let container = document.createElement("div");
     container.className = "renderedOrderContainer"
 
     let headLine = document.createElement("h2");
     headLine.innerText = "Dina tidigare order:"
 
-
+    
     orders.forEach((order) => {
 
         let orderContainer = document.createElement("div");

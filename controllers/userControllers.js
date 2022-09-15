@@ -7,13 +7,12 @@ import validateValues from '../validation/validation.js';
 const dataPath = './data/users.json'
 
 // Gets all users
-export const getAllUsers = async (req, res) => {
+export const getAllUsers = () => {
     try {
         let users = fs.readFileSync(dataPath)
-
-        res.status(200).json({bool: true, msg: JSON.parse(users)})
+        return {bool: true, msg: JSON.parse(users)}
     }catch(err) {
-        res.status(500).json({bool: false, msg: err.message})
+        return {bool: false, msg: err.message}
     }
 }
 
@@ -89,6 +88,15 @@ export const registerUser = async (req, res) => {
             req.body.phone.length > 0 
         ) 
         {   
+            
+            // Validates values
+            const checkValues = validateValues(req.body)
+
+            if(!checkValues.bool) {
+                res.status(404).json(checkValues)
+                return
+            }
+
             // Check existing email in stripe
             const checkExisitingUser = await stripe.customers.search({
                 query: `email:\'${req.body.email}\'`,
@@ -100,14 +108,6 @@ export const registerUser = async (req, res) => {
             if(!checkExisitingUser.data.length == 0 || findUserinList != undefined) {
                 res.status(404).json({bool: false, msg: "Användaren existerar redan"})
                 return 
-            }
-
-            // Validates values
-            const checkValues = validateValues(req.body)
-
-            if(!checkValues.bool) {
-                res.status(404).json(checkValues)
-                return
             }
 
             // Encrypts the password
