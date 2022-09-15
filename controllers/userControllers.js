@@ -29,8 +29,10 @@ export const getLoggedInUser = (req, res) => {
 export const loginUser = async (req, res) => {
     try {
         // Gets list from json
-        let users = fs.readFileSync(dataPath)
-        users = JSON.parse(users)
+        let users = getAllUsers()
+        if(!users.bool){
+            return res.status(404).json({bool: false, msg: users.msg})
+        }
 
         // Checks if input fields have value
         if(req.body && req.body.email.length > 0 && req.body.password.length > 0) { 
@@ -46,7 +48,7 @@ export const loginUser = async (req, res) => {
             }
 
             // Checks existing email in json-file
-            const foundUser = users.find(user => user.email == req.body.email)
+            const foundUser = users.msg.find(user => user.email == req.body.email)
 
             if(foundUser && await bcrypt.compare(req.body.password, foundUser.password)) {
                 req.session.loggedInUser = {
@@ -54,7 +56,7 @@ export const loginUser = async (req, res) => {
                     user: foundUser,
                     date: new Date()
                 }
-                res.status(200).json({bool: true, msg: `Du är inloggad! Välkommen ${foundUser.name}!`})
+                res.status(200).json({bool: true, msg: foundUser.name})
                 return
             }
 
@@ -72,26 +74,16 @@ export const loginUser = async (req, res) => {
 export const registerUser = async (req, res) => {
     try {
         // Gets list from json
-        let users = fs.readFileSync(dataPath)
-        users = JSON.parse(users)
-
+        let users = getAllUsers()
+        if(!users.bool){
+            return res.status(404).json({bool: false, msg: users.msg})
+        }
+        
         // Checks if all input fields have values
-        if(
-            req.body && 
-            req.body.name.length > 0 && 
-            req.body.password.length > 0 && 
-            req.body.email.length > 0 && 
-            req.body.address.length > 0 && 
-            req.body.zipcode.length > 0 && 
-            req.body.city.length > 0 && 
-            req.body.country.length > 0 && 
-            req.body.phone.length > 0 
-        ) 
-        {   
-            
+        if(req.body) {   
             // Validates values
             const checkValues = validateValues(req.body)
-
+            console.log(checkValues)
             if(!checkValues.bool) {
                 res.status(404).json(checkValues)
                 return
@@ -103,7 +95,7 @@ export const registerUser = async (req, res) => {
             });
 
             // Check existing email in json-file
-            const findUserinList = users.find(user => user.email == req.body.email)
+            const findUserinList = users.msg.find(user => user.email == req.body.email)
 
             if(!checkExisitingUser.data.length == 0 || findUserinList != undefined) {
                 res.status(404).json({bool: false, msg: "Användaren existerar redan"})
@@ -113,21 +105,13 @@ export const registerUser = async (req, res) => {
             // Encrypts the password
             const hashedPassword = await bcrypt.hash(req.body.password, 5)
 
+            delete req.body.password
+
             // Creates customer in stripe
-            const customer = await stripe.customers.create({
-                email: req.body.email,
-                name: req.body.name,
-                phone: req.body.phone,
-                address: {
-                    line1: req.body.address,
-                    postal_code: req.body.zipcode,
-                    city: req.body.city,
-                    country: req.body.country
-                }
-            });
+            const customer = await stripe.customers.create(req.body);
 
             // Creates customer in json-file
-            users.push({
+            users.msg.push({
                 id: customer.id, 
                 name: req.body.name,
                 email: req.body.email,
