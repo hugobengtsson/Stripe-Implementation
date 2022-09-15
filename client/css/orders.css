@@ -1,0 +1,15 @@
+.orderContainer {
+    border-bottom: 1px solid grey;
+}
+
+.productContainer {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 !important;
+    margin-bottom: 40px;
+}
+
+.quantityPriceContainer {
+    margin: 0 !important;
+    margin-bottom: 20px;
+}
