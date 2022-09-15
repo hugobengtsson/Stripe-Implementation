@@ -168,11 +168,11 @@ a {
     align-items: center;
     flex-direction: column;
     height: 80vh;
-    text-align: center;
+
 }
 
 #msgContainer > a  {
-    background-color: rgba(82, 178, 82, 0.579);
+    background-color: rgba(178, 111, 82, 0.579);
     border-radius: 10px;
     padding: 10px 20px;
     color: white;
