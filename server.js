@@ -30,5 +30,5 @@ app.use("/api/payment", paymentRouter)
 
 
 app.listen(port, () => {
-    console.log("Server is runnint on port: ", port)
+    console.log("Server is running on port: ", port)
 })
