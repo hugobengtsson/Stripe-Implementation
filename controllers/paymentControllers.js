@@ -34,30 +34,31 @@ export const createPayment = async (req, res) => {
 
 export const verifyPayment = async (req, res) => {
     try {
-        let orders = fs.readFileSync(dataPath)
-        orders = JSON.parse(orders)
-        const findOrder = orders.find(order => order.id == req.body.sessionId)
+        if(req.session && req.session.loggedInUser) {
+            let orders = fs.readFileSync(dataPath)
+            orders = JSON.parse(orders)
+            const findOrder = orders.find(order => order.id == req.body.sessionId)
 
-        if(findOrder){
-            throw new Error()
-        }
+            if(findOrder){
+                throw new Error()
+            }
 
-        const findSession = await stripe.checkout.sessions.retrieve(req.body.sessionId)
+            const findSession = await stripe.checkout.sessions.retrieve(req.body.sessionId)
 
-        if(findSession.payment_status == "paid"){
-            //pusha till order.json
+            if(findSession.payment_status == "paid"){
+                //pusha till order.json
 
-            const lineItems = await getLineItems(req.body.sessionId)
-            findSession.lineItems = lineItems.data
-            
-            orders.push(findSession)
-            fs.writeFileSync(dataPath, JSON.stringify(orders))
-            
-            res.status(200).json(findSession)
-            return 
+                const lineItems = await getLineItems(req.body.sessionId)
+                findSession.lineItems = lineItems.data
+
+                orders.push(findSession)
+                fs.writeFileSync(dataPath, JSON.stringify(orders))
+
+                res.status(200).json(findSession)
+                return 
+            }
         }
         res.status(404).json(false) //kolla statuskoden
-        
     } catch (err) {
         res.status(404).json(err.message)
     }
@@ -67,7 +68,7 @@ export const verifyPayment = async (req, res) => {
 export const getLineItems = async (sessionId) => {
     try {
         return await stripe.checkout.sessions.listLineItems(sessionId);
-    } catch (error) {
-        
+    } catch (err) {
+        res.status(404).json(err.message)
     }
 }
