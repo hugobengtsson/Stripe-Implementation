@@ -3,6 +3,7 @@ import { checkUserInCookie, logoutUser, makeRequest} from "../helpers/fetchHelpe
 export const stripe = Stripe("pk_test_51Lh7v3LiXPjWjAyxeBK9PUswZwXrKZ5PiajD2a7NRxeAl6bKWg6udbItz9uRYfeodsCkWLdZQrIQQEsz45s8pIby004x2bX371");
 
 var isItemsViewVisible = false;
+let myPage = document.getElementById("myPage")
 
 const initSite = async () => {
     createUIFromLoadedItemsData();
@@ -12,24 +13,25 @@ const initSite = async () => {
 
 // What will be shown if you're logged in or not
 async function showCorrectAuthBoxes() {
-
     const checkuser = await checkUserInCookie();
-    console.log(checkuser.msg)
 
     if(checkuser.msg.user) {
-        document.querySelector("#myPage").classList.add("hidden")
-        document.querySelector("#logOut").classList.remove("hidden")
+        myPage.innerText = "Logga ut"
+        myPage.href = "./index.html"
         return
     } 
-        document.querySelector("#myPage").classList.remove("hidden")
-        document.querySelector("#logOut").classList.add("hidden")
+        myPage.innerText = "Logga in"
+        myPage.href = "./myPage.html"
 }
 
 async function getProducts() {
-    const products = await fetch("http://localhost:3000/api/getAllProducts");
-    const result = await products.json()
-    console.log(result)
-    return result;
+    try {
+        const products = await fetch("http://localhost:3000/api/getAllProducts");
+        const result = await products.json()
+        return result;
+    } catch(err) {
+        console.error(err)
+    }
 }
 
 /* Use the data to create a list of these object on your website */
@@ -246,12 +248,14 @@ function setCounter() {
 }
 
 // What will happen when you click on the logOut-link
-document.querySelector("#logOut").addEventListener("click", async () => {
-    document.querySelector("#myPage").classList.remove("hidden")
-    document.querySelector("#logOut").classList.add("hidden")
-    await logoutUser()
-    alert("Du är utloggad!")
-    window.location.href = "./index.html"
+myPage.addEventListener("click", async () => {
+    const checkuser = await checkUserInCookie();
+
+    if(checkuser.msg.user) {
+        await logoutUser()
+        alert("Du är utloggad!")
+        return
+    } 
 })
 
 
