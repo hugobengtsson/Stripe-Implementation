@@ -7,24 +7,25 @@ export const createPayment = async (req, res) => {
     
     if(req.session && req.session.loggedInUser) {
         
-        // loop över cartItems som blir line_items.
+        const cart = req.body;
+
+        const line_items = cart.map((cartItem) => {
+            let line_item = {
+                price: cartItem.default_price.id,
+                quantity: cartItem.quantity
+            }
+            
+            return line_item
+        })
+
         const session = await stripe.checkout.sessions.create({
-            //fixa line items
-            line_items: [
-                {
-                    // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-                    price: 'price_1Lh8H9LiXPjWjAyxNUuDBP3v',
-                    quantity: 1,
-                },
-            ],
+            line_items,
             mode: 'payment',
             success_url: "http://localhost:3000/success.html?session_id={CHECKOUT_SESSION_ID}",
             cancel_url: `http://localhost:3000/cancel.html`,
             customer: req.session.loggedInUser.user.id 
         });
-        
         res.json(session.id);
-        
     }else{
         res.status(401).json(false)
     }
@@ -60,11 +61,9 @@ export const verifyPayment = async (req, res) => {
 }
 
 export const getLineItems = async (sessionId) => {
-   try {
-
-    return await stripe.checkout.sessions.listLineItems(sessionId);
-
-   } catch (error) {
-    
-   }
+    try {
+        return await stripe.checkout.sessions.listLineItems(sessionId);
+    } catch (error) {
+        
+    }
 }

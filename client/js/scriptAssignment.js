@@ -190,7 +190,7 @@ async function createShoppingSummary() {
     let shoppingCart = JSON.parse(localStorage.getItem("cart"));
     var totalPrice = 0;
     for(var i = 0; i < shoppingCart.length; i++) {
-        totalPrice += Number(shoppingCart[i].default_price.unit_amount_decimal.substring(0, shoppingCart[i].default_price.unit_amount_decimal.length - 2));
+        totalPrice += Number(shoppingCart[i].default_price.unit_amount_decimal.substring(0, shoppingCart[i].default_price.unit_amount_decimal.length - 2) * shoppingCart[i].quantity);
     }
     var priceLabel = document.createElement("h2");
     priceLabel.innerText = "Totalt pris: " + totalPrice + " kr";
