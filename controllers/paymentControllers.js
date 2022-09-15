@@ -47,7 +47,7 @@ export const verifyPayment = async (req, res) => {
                 orders.push(findSession)
                 fs.writeFileSync(dataPath, JSON.stringify(orders))
             }
-            res.status(200).json("Success")
+            res.status(200).json(findSession)
             return 
         }
         res.status(404).json(false) //kolla statuskoden
