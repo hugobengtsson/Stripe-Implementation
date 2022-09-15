@@ -119,7 +119,7 @@ export const registerUser = async (req, res) => {
             })
 
             // Replaces the old list from json with new updated one
-            fs.writeFileSync(dataPath, JSON.stringify(users))
+            fs.writeFileSync(dataPath, JSON.stringify(users.msg))
 
             res.status(200).json({bool: true, msg: "Ditt konto är skapat! Nu kan du logga in"})
             return

@@ -1,1 +1,14 @@
-[]
+[
+    {
+        "id": "cus_MRAyzpG18ufsum",
+        "name": "Angelica Moberg Skoglund",
+        "email": "ange@ange.se",
+        "password": "$2b$05$OCFn7Qa7LtuMkJh7V4z3wO7RIntVDp8Aru6w8bvDXoQ7C0ZuPFP/y"
+    },
+    {
+        "id": "cus_MRB3O8XYInCvrO",
+        "name": "Angelica Moberg Skoglund",
+        "email": "admin@admin.se",
+        "password": "$2b$05$rgztK5hYvrIVu2mF.mBnI.N0VgH8LwLC9Cz/eHTDcWV.3zaSkXJeG"
+    }
+]
