@@ -102,6 +102,7 @@ export const registerUser = async (req, res) => {
                 return 
             }
 
+            // Validates values
             const checkValues = validateValues(req.body)
 
             if(!checkValues.bool) {
