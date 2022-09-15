@@ -48,3 +48,8 @@ Content-Type: application/json
     "username": "Victor",
     "password": "hej123"
 }
+
+### ORDERS ###
+
+GET http://localhost:3000/api/getOrders
+
