@@ -27,9 +27,10 @@ async function verifyPayment(sessionId){
     )
 
     const message = document.getElementById("message")
+    console.log(response);
     if(response){
         localStorage.removeItem("cart")
-        message.innerText = 'Tack för din order!'
+        message.innerText = `Tack ${response.customer_details.name} för din beställning! Ditt ordernummer: ${response.id}`
         
     }else{
         message.innerText = 'Din betalning misslyckades!'
