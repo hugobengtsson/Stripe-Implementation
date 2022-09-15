@@ -38,7 +38,6 @@ export const verifyPayment = async (req, res) => {
             //pusha till order.json
             const lineItems = await getLineItems(req.body.sessionId)
             findSession.lineItems = lineItems.data
-            
             let orders = fs.readFileSync(dataPath)
             orders = JSON.parse(orders)
             const findOrder = orders.find(order => order.id == findSession.id)
@@ -46,7 +45,6 @@ export const verifyPayment = async (req, res) => {
             if(!findOrder){
                 orders.push(findSession)
                 fs.writeFileSync(dataPath, JSON.stringify(orders))
-                
             }
             res.status(200).json("Success")
             return 

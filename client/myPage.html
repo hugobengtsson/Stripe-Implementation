@@ -11,9 +11,11 @@
     <header>
       <a id="home" href="./index.html"><h1>TechStore</h1></a>
       <div>
-        <a id="cart">
-          <span id="counter"></span> <i class="fa fa-shopping-cart" aria-hidden="true"></i>
-        </a>
+        <div>
+          <a id="cart">
+            <span id="counter"></span> <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+          </a>
+        </div>
       </div>
     </header>
     <main>
@@ -22,7 +24,7 @@
           <form class="form" id="login">  
               <h1 class="h1">Logga in</h1>
               <div class="inputGroup">
-                  <input id="inputEmail" type="email" placeholder="Email" name="email" autofocus required> 
+                  <input id="inputEmail" type="email" placeholder="Email" name="email" required> 
               </div>
               <div class="inputGroup">
                   <input id="inputPassword" type="password" placeholder="Lösenord" name="Lösenord" required> 
@@ -61,6 +63,12 @@
                     </div>
                     <div class="inputGroup">
                       <input id="city" type="text" placeholder="Ort" name="city" required> 
+                    </div>
+                    <div class="inputGroup">
+                      <select name="Land" id="country">
+                        <option value="Sverige">Sverige</option>
+                        <option value="Norge">Norge</option>
+                      </select>
                     </div>
                     <div class="inputGroup">
                       <input id="phone" type="text" placeholder="Telefon" name="phone" required> 
