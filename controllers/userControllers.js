@@ -10,9 +10,9 @@ const dataPath = './data/users.json'
 export const getAllUsers = () => {
     try {
         let users = fs.readFileSync(dataPath)
-        return {bool: true, msg: JSON.parse(users)}
+        return JSON.parse(users)
     }catch(err) {
-        return {bool: false, msg: err.message}
+        console.error(err) // ?
     }
 }
 
@@ -22,17 +22,16 @@ export const getLoggedInUser = (req, res) => {
         res.status(200).json({bool: true, msg: req.session.loggedInUser})
         return
     }
-    res.status(404).json({bool: false, msg: "Du är inte inloggad"})
+    res.status(401).json({bool: false, msg: "Du är inte inloggad"}) 
+    /* Om man tar bort statusen så försvinner felmeddeladet i loggen. 
+    Ligger och söker hela tiden på klienten, så syns när man  inte är inloggad. Checka med Victor om vad som är bäst */
 }
 
 // Login user
 export const loginUser = async (req, res) => {
     try {
         // Gets list from json
-        let users = getAllUsers()
-        if(!users.bool){
-            return res.status(404).json({bool: false, msg: users.msg})
-        }
+        let users = await getAllUsers()
 
         // Checks if input fields have value
         if(req.body && req.body.email.length > 0 && req.body.password.length > 0) { 
@@ -43,12 +42,12 @@ export const loginUser = async (req, res) => {
             });
 
             if(checkExisitingUser.data.length == 0) {
-                res.status(404).json({bool: false, msg: "Uppgifterna stämmer inte, försök igen"})
+                res.status(400).json({bool: false, msg: "Uppgifterna stämmer inte, försök igen"})
                 return 
             }
 
             // Checks existing email in json-file
-            const foundUser = users.msg.find(user => user.email == req.body.email)
+            const foundUser = users.find(user => user.email == req.body.email)
 
             if(foundUser && await bcrypt.compare(req.body.password, foundUser.password)) {
                 req.session.loggedInUser = {
@@ -60,13 +59,13 @@ export const loginUser = async (req, res) => {
                 return
             }
 
-            res.status(404).json({bool: false, msg: "Uppgifterna stämmer inte, försök igen"})
+            res.status(400).json({bool: false, msg: "Uppgifterna stämmer inte, försök igen"})
             return
         }
-        res.status(404).json({bool: false, msg: "Du måste fylla i både användare och lösenord"})
+        res.status(400).json({bool: false, msg: "Du måste fylla i både användare och lösenord"})
 
     }catch(err) {
-        res.status(404).json({bool: false, msg: err.message})
+        res.status(400).json({bool: false, msg: err.message})
     }
 }
 
@@ -74,62 +73,53 @@ export const loginUser = async (req, res) => {
 export const registerUser = async (req, res) => {
     try {
         // Gets list from json
-        let users = getAllUsers()
-        if(!users.bool){
-            return res.status(404).json({bool: false, msg: users.msg})
-        }
-        
-        // Checks if all input fields have values
-        if(req.body) {   
+        let users = await getAllUsers()
+
+        if(req.body && req.body.newCustomer && req.body.password) {  
+            
             // Validates values
-            const checkValues = validateValues(req.body)
-            console.log(checkValues)
+            const checkValues = validateValues(req.body.newCustomer)
+
             if(!checkValues.bool) {
-                res.status(404).json(checkValues)
+                res.status(400).json(checkValues)
                 return
             }
-
             // Check existing email in stripe
             const checkExisitingUser = await stripe.customers.search({
-                query: `email:\'${req.body.email}\'`,
+                query: `email:\'${req.body.newCustomer.email}\'`,
             });
-
             // Check existing email in json-file
-            const findUserinList = users.msg.find(user => user.email == req.body.email)
+            const findUserinList = users.find(user => user.email == req.body.newCustomer.email)
 
             if(!checkExisitingUser.data.length == 0 || findUserinList != undefined) {
-                res.status(404).json({bool: false, msg: "Användaren existerar redan"})
+                res.status(400).json({bool: false, msg: "Användaren existerar redan"})
                 return 
             }
-
             // Encrypts the password
             const hashedPassword = await bcrypt.hash(req.body.password, 5)
 
-            delete req.body.password
-
             // Creates customer in stripe
-            const customer = await stripe.customers.create(req.body);
+            const customer = await stripe.customers.create(req.body.newCustomer);
 
             // Creates customer in json-file
-            users.msg.push({
+            users.push({
                 id: customer.id, 
-                name: req.body.name,
-                email: req.body.email,
+                name: req.body.newCustomer.name,
+                email: req.body.newCustomer.email,
                 password: hashedPassword
             })
 
             // Replaces the old list from json with new updated one
-            fs.writeFileSync(dataPath, JSON.stringify(users.msg))
+            fs.writeFileSync(dataPath, JSON.stringify(users))
 
             res.status(200).json({bool: true, msg: "Ditt konto är skapat! Nu kan du logga in"})
             return
         }
-        res.status(404).json({bool: false, msg: "Fyll i alla fält"})
+        res.status(400).json({bool: false, msg: "Fyll i alla fält"})
     }catch(err) {
-        res.status(404).json({bool: false, msg: err.message})
+        res.status(400).json({bool: false, msg: err.message})
     }
 }
-
 
 // Log out user
 export const logoutUser = (req, res) => {

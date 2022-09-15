@@ -4,7 +4,6 @@ import validateValues from "../validation/validation.js"
 const buttonCA = document.querySelector(".buttonCA")
 const loginForm = document.querySelector("#login")
 const createAccountForm = document.querySelector("#createAccount")
-let inputEmail = document.getElementById("inputEmail").value
 
 function initSite() {
     showCorrectAuthBoxes();
@@ -27,8 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
         createAccountForm.classList.add("hidden");
     });
 });
-
-
 
 // Create account/customer
 if(buttonCA) {
@@ -55,10 +52,9 @@ if(buttonCA) {
                 country,
             },
             phone,
-            password
         }
 
-        let checkValues = validateValues(newCustomer)
+        let checkValues = validateValues(newCustomer, password)
 
         if(!checkValues.bool) {
             alert(checkValues.msg)
@@ -79,7 +75,12 @@ if(buttonCA) {
             return
         }
     
-        const registerCustomer = await createUser(newCustomer)
+        const customer = {
+            newCustomer,
+            password
+        }
+
+        const registerCustomer = await createUser(customer)
 
         if(registerCustomer.bool) {
             alert(registerCustomer.msg)
@@ -90,7 +91,6 @@ if(buttonCA) {
         }
     })
 }
-
 
 // Checking if the input of passwords are correct
 function validPass(password, confPassword){
@@ -108,11 +108,6 @@ function sameInputs(username, password){
     return true
 }
 
-
-
-
-
-
 // Login - process
 document.querySelector(".button").addEventListener("click", async (e) => {
     e.preventDefault()
@@ -127,7 +122,7 @@ document.querySelector(".button").addEventListener("click", async (e) => {
                     return
                 }
 
-                alert("Välkommen tillbaka " + login.msg + "!") 
+                alert("Välkommen " + login.msg + "!") 
                 showCorrectAuthBoxes();
         } else {
             alert("Alla fält måste vara ifyllda")
@@ -140,10 +135,8 @@ async function showCorrectAuthBoxes() {
     
     if(checkuser.msg.user) {
         window.location.href = './index.html';
-        return
     } 
 }
-
 
 function setCounter() {
 
