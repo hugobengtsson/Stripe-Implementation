@@ -30,7 +30,10 @@ async function verifyPayment(sessionId){
     const message = document.getElementById("message")
 
     if(response.customer_details){
-        localStorage.removeItem("cart")
+        var emptyArray = [];
+        localStorage.setItem("cart", JSON.stringify(emptyArray));
+    
+        //localStorage.removeItem("cart")
         message.innerText = `Tack ${response.customer_details.name} för din beställning! Ditt ordernummer: ${response.id}`
         
     }else{
