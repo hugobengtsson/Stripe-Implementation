@@ -84,8 +84,7 @@ if(buttonCA) {
 
         if(registerCustomer.bool) {
             alert(registerCustomer.msg)
-            loginForm.classList.remove("hidden");
-            createAccountForm.classList.add("hidden");
+            showCorrectAuthBoxes()
         } else {
             alert(registerCustomer.msg)
         }

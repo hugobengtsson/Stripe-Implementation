@@ -120,7 +120,12 @@ async function showShoppingCart() {
     
     /* Shopping list */
     var list = document.createElement("ul");
+    
     let shoppingCart = JSON.parse(localStorage.getItem("cart"));
+
+    if(!shoppingCart){
+        shoppingCart = []
+    }
 
     for(var index = 0; index < shoppingCart.length; index++) {
         list.appendChild(createShoppingCartItem(shoppingCart[index], index));
@@ -200,13 +205,17 @@ async function createShoppingSummary() {
     /* Total price */
     let shoppingCart = JSON.parse(localStorage.getItem("cart"));
     var totalPrice = 0;
+
+    if(!shoppingCart){
+        shoppingCart = []
+    }
     for(var i = 0; i < shoppingCart.length; i++) {
         totalPrice += Number(shoppingCart[i].default_price.unit_amount_decimal.substring(0, shoppingCart[i].default_price.unit_amount_decimal.length - 2) * shoppingCart[i].quantity);
     }
     var priceLabel = document.createElement("h2");
     priceLabel.innerText = "Totalt pris: " + totalPrice + " kr";
 
-    if(JSON.parse(localStorage.getItem("cart")).length > 0) {
+    if(shoppingCart.length > 0) {
 
         /* Proceed button */
         var proceedButton = document.createElement("button");
@@ -264,6 +273,7 @@ myPage.addEventListener("click", async () => {
     if(checkuser.msg.user) {
         await logoutUser()
         alert("Du är utloggad!")
+        showCorrectAuthBoxes()
         return
     } 
 })
