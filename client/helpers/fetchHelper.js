@@ -41,14 +41,8 @@ export const logoutUser = async() => {
 
     const reqOptions = {
         method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
     }
     let result = await makeRequest('http://localhost:3000/api/login', reqOptions)
-    return result
-}
 
-
-export const getAllUsers = async() => {
-    let result = await makeRequest('http://localhost:3000/api/users')
     return result
 }

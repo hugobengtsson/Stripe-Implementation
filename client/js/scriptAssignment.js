@@ -16,7 +16,7 @@ const initSite = async () => {
 async function showCorrectAuthBoxes() {
     const checkuser = await checkUserInCookie();
 
-    if(checkuser.msg.user) {
+    if(checkuser.bool) {
         myPage.innerText = "Logga ut"
         myPage.href = "./index.html"
         return
@@ -147,7 +147,7 @@ async function showShoppingCart() {
 
     const checkuser = await checkUserInCookie();
 
-    if(!checkuser.msg.user) {
+    if(!checkuser.bool) {
         alert("Logga in först")
         window.location.href = "./myPage.html"
         return
@@ -267,15 +267,18 @@ function setCounter() {
 }
 
 // What will happen when you click on the logOut-link
-myPage.addEventListener("click", async () => {
+myPage.addEventListener("click", async (e) => {
+    e.preventDefault()
     const checkuser = await checkUserInCookie();
 
-    if(checkuser.msg.user) {
-        await logoutUser()
+    if(checkuser.bool) {
+        const logOut = await logoutUser()
         alert("Du är utloggad!")
         showCorrectAuthBoxes()
+        window.location.href = "./index.html"
         return
     } 
+    window.location.href = "./myPage.html"
 })
 
 

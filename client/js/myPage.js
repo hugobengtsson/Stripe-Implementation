@@ -1,4 +1,4 @@
-import { checkUserInCookie, createUser, loginUser, getAllUsers } from "../helpers/fetchHelper.js"
+import { checkUserInCookie, createUser, loginUser } from "../helpers/fetchHelper.js"
 import validateValues from "../validation/validation.js"
 
 const buttonCA = document.querySelector(".buttonCA")
@@ -132,7 +132,7 @@ document.querySelector(".button").addEventListener("click", async (e) => {
 async function showCorrectAuthBoxes() {
     const checkuser = await checkUserInCookie();
     
-    if(checkuser.msg.user) {
+    if(checkuser.bool) {
         window.location.href = './index.html';
     } 
 }

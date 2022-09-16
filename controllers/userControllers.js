@@ -131,7 +131,9 @@ export const registerUser = async (req, res) => {
 // Log out user
 export const logoutUser = (req, res) => {
     if (req.session && req.session.loggedInUser) {
-        req.session.loggedInUser = null
+        req.session = null
         res.status(200).json({ bool: true, msg: "Du är nu utloggad" })
+        return
     }
+    res.status(200).json({ bool: true, msg: "Du är nu utloggad" })
 }
