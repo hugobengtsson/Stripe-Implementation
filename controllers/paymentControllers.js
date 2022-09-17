@@ -23,7 +23,10 @@ export const createPayment = async (req, res) => {
             mode: 'payment',
             success_url: "http://localhost:3000/success.html?session_id={CHECKOUT_SESSION_ID}",
             cancel_url: `http://localhost:3000/cancel.html`,
-            customer: req.session.loggedInUser.user.id 
+            customer: req.session.loggedInUser.user.id , 
+            metadata: {
+                created_date: new Date().toLocaleString()
+            }
         });
         res.json(session.id);
     }else{

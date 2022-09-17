@@ -18,11 +18,9 @@ async function showCorrectAuthBoxes() {
 
     if(checkuser.bool) {
         myPage.innerText = "Logga ut"
-        myPage.href = "./index.html"
         return
     } 
         myPage.innerText = "Logga in"
-        myPage.href = "./myPage.html"
 }
 
 async function getProducts() {
