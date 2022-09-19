@@ -7,9 +7,43 @@
     justify-content: space-between;
     margin: 0 !important;
     margin-bottom: 40px;
+    background-color: #f7f7f7;
 }
 
 .quantityPriceContainer {
     margin: 0 !important;
     margin-bottom: 20px;
+    display: flex;
+    column-gap: 20px;
+}
+.firstContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px !important;
+}
+
+.orderNr {
+    font-size: 12px;
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+.orderTitle, .date {
+    margin: 0;
+}
+
+
+.totalPriceP {
+    font-size: 14px;
+    font-weight: bold;
+    text-align: end;
+}
+
+p {
+    font-size: 14px;
+}
+
+.renderOrderContainer > h2 {
+    margin-bottom: 70px;
 }

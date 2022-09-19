@@ -16,13 +16,11 @@ const initSite = async () => {
 async function showCorrectAuthBoxes() {
     const checkuser = await checkUserInCookie();
 
-    if(checkuser.msg.user) {
+    if(checkuser.bool) {
         myPage.innerText = "Logga ut"
-        myPage.href = "./index.html"
         return
     } 
         myPage.innerText = "Logga in"
-        myPage.href = "./myPage.html"
 }
 
 async function getProducts() {
@@ -147,7 +145,7 @@ async function showShoppingCart() {
 
     const checkuser = await checkUserInCookie();
 
-    if(!checkuser.msg.user) {
+    if(!checkuser.bool) {
         alert("Logga in först")
         window.location.href = "./myPage.html"
         return
@@ -270,12 +268,14 @@ function setCounter() {
 myPage.addEventListener("click", async () => {
     const checkuser = await checkUserInCookie();
 
-    if(checkuser.msg.user) {
-        await logoutUser()
+    if(checkuser.bool) {
+        const logOut = await logoutUser()
         alert("Du är utloggad!")
         showCorrectAuthBoxes()
+        window.location.href = "./index.html"
         return
     } 
+    window.location.href = "./myPage.html"
 })
 
 

@@ -18,7 +18,7 @@ export const renderOrders = async () => {
     container.className = "renderedOrderContainer"
 
     let headLine = document.createElement("h2");
-    headLine.innerText = "Dina tidigare order:"
+    headLine.innerText = "Dina tidigare ordrar:"
 
     
     orders.forEach((order) => {
@@ -26,8 +26,27 @@ export const renderOrders = async () => {
         let orderContainer = document.createElement("div");
         orderContainer.className = "orderContainer"
 
+        let firstContainer = document.createElement("div");
+        firstContainer.className = "firstContainer"
+
+        let orderTitle = document.createElement("p");
+        orderTitle.className = "orderTitle";
+        orderTitle.innerText = "Order:"
+
         let orderNr = document.createElement("p");
+        orderNr.className = "orderNr";
         orderNr.innerText = order.session.id;
+
+        firstContainer.append(orderTitle)
+        
+        if(order.session.metadata){
+            let date = document.createElement("p");
+            date.classList.add("date")
+            date.innerText = order.session.metadata.created_date;
+            firstContainer.append(date)
+        }
+        
+        
 
         let totalPrice = 0;
         order.lineItems.forEach((lineItem) => {
@@ -42,7 +61,7 @@ export const renderOrders = async () => {
             quantityPriceContainer.className = "quantityPriceContainer";
 
             let quantity = document.createElement("p");
-            quantity.innerText = "Antal: " + lineItem.quantity
+            quantity.innerText = lineItem.quantity + "      x"
 
             let productPrice = document.createElement("p");
             productPrice.innerText = lineItem.price.unit_amount_decimal.substring(0, lineItem.price.unit_amount_decimal.length - 2) + " kr";
@@ -52,15 +71,18 @@ export const renderOrders = async () => {
             quantityPriceContainer.append(quantity, productPrice)
             productContainer.append(productName, quantityPriceContainer)
             orderContainer.append(productContainer)
+            
 
         })
 
         let totalPriceP = document.createElement("p");
+        totalPriceP.className = "totalPriceP";
         totalPriceP.innerHTML = "Totalt: " + totalPrice + " kr"
 
-        orderContainer.prepend(orderNr)
+        orderContainer.prepend(firstContainer, orderNr)
         orderContainer.append(totalPriceP)
         container.append(orderContainer)
+        
 
     })
 
