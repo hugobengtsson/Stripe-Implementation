@@ -265,8 +265,7 @@ function setCounter() {
 }
 
 // What will happen when you click on the logOut-link
-myPage.addEventListener("click", async (e) => {
-    e.preventDefault()
+myPage.addEventListener("click", async () => {
     const checkuser = await checkUserInCookie();
 
     if(checkuser.bool) {
